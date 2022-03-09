@@ -161,12 +161,67 @@ class Analyse():
         self.rapport.fichier.write(f"![camembert par genre]({nom_graphique})"+ "\n")
 
 
-    def prenom(self):
-        pass
+    def ville_naissance(self):
+        # Compte le nombre de personne par genre
+        compte_ville = self.df_tout_le_monde['lieu_de_naissanceLabel.value'].value_counts()
+        df_compte_ville = compte_ville.to_frame()
+        df_compte_ville.reset_index(inplace = True)
+        #df_compte_ville.set_index([i for i in range(len(compte_ville))])
+        print(df_compte_ville)
+        #print(compte_ville)
+        md_tableau_compte = """|Ville de naissance|Nombre de personne| \n |---|---| \n"""
+        for i in range(len(df_compte_ville)):
+            #print(df_compte_ville.iloc[i,0])
+            md_tableau_compte += f"|{df_compte_ville.iloc[i,0]}|{df_compte_ville.iloc[i,1]}| \n"
+        print(md_tableau_compte)
+        #---------Dans le rapport
+        titre = ("## D'où viennent les communard·e·s")
+        contexte = ("""Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné.
+                    Comptons par ville combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s.""")
+        nombre = md_tableau_compte
+        self.rapport.fichier.write(titre + "\n")
+        self.rapport.fichier.write(contexte + "\n")
+        self.rapport.fichier.write(nombre+ "\n")    
 
-    def occupation(self):
-        pass
-        
+    def annee_naissance(self):
+        #compte_ville = self.df_tout_le_monde['date_de_naissance.value'].value_counts()
+        #print(compte_ville)
+        dico_date={}
+        for i in range(len(self.df_tout_le_monde)):
+            # chercher la date de naissance par ligne, et en prendre que les 4 premier caractère qui corresponde à l'année
+            # mettre dans un dico le nombre d'occurence par année
+            # try pour gérer les dates inconnues, non rempli ou au format étrange
+            try :
+                annee_naiss = self.df_tout_le_monde.loc[i,'date_de_naissance.value'][:4]
+                #print(annee_naiss)
+                if annee_naiss in dico_date:
+                    dico_date[annee_naiss] += 1
+                else:
+                    dico_date[annee_naiss] = 1     
+            except:
+                pass
+        #print(dico_date)
+        # -- Transformer le dico en dataframe
+        df_date_naissance = pd.DataFrame(list(dico_date.items()),columns=['année', 'nb'])
+        df_date_naissance = df_date_naissance.sort_values(by='année')
+        #print(df_date_naissance)
+        # -- Graphique
+        #plt.figure(figsize=(17,4))
+        sns.catplot(x="année", y="nb", kind="bar", data=df_date_naissance)
+        plt.xticks(rotation= 90)
+        plt.tight_layout()
+        nom_graphique = "barre_annee_naissance.png"
+        chemin_graphique = "rapport/" + nom_graphique
+        plt.savefig(chemin_graphique)
+        #plt.show()
+        plt.close()
+        #-------- Dans le rapport
+        titre = ("## Répartition par année de naissance")
+        contexte = ("""Dans wikidata, on peut remplir la 'date de naissance' (P569) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné.
+                    Voyons comment se répartissent selon leur naissance, donc âge les communard·e·s ayant une fiche dans wikidata.""")
+        self.rapport.fichier.write(titre + "\n")
+        self.rapport.fichier.write(contexte + "\n")
+        self.rapport.fichier.write(f"![barres par années de naissance]({nom_graphique})"+ "\n")                
 
     def converti_en_pdf(self):
         pass
@@ -175,15 +230,18 @@ class Analyse():
         self.requete_wikidata()
         self.liste_des_personnes()
         self.genre()
-        self.prenom()
-        self.occupation()
+        self.annee_naissance()
+        self.ville_naissance()
         self.converti_en_pdf()
 
 if __name__ == "__main__":
     #r = Rapport()
     r2 = Analyse(endpoint_url, query)
     #print(r2.df_tout_le_monde)
-    r2.liste_des_personnes()
-    r2.genre()
-    r2.converti_en_pdf()
-    print("action")
+    #r2.liste_des_personnes()
+    #r2.genre()
+    #r2.ville_naissance()
+    #r2.annee_naissance()
+    #r2.converti_en_pdf()
+    r2.pipeline()
+    print("fini")
