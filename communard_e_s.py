@@ -21,6 +21,7 @@ Architecture :
 """
 
 #--------------------- Les imports----------------------------------------------------------------------------------------
+from posixpath import split
 import sys
 import os
 import datetime
@@ -29,12 +30,8 @@ import pandas as pd
 #-------
 import matplotlib.pyplot as plt
 import seaborn as sns
-# ----- pour conversion md -> pdf
-#import md2pdf
-#import markdown2pdf3
-#from markdown import markdown
-#import pdfkit
-# Pour faire les requete via l'API de wikidata
+#----- pour conversion md -> pdf
+#------Pour faire les requete via l'API de wikidata
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 #-------------------- Requêter wikidata ---------------------------------------------------------------------------------
@@ -46,13 +43,31 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 
 endpoint_url = "https://query.wikidata.org/sparql"
 
-query = """SELECT ?communard ?communardLabel ?pr_nom ?pr_nomLabel ?sexe_ou_genre ?sexe_ou_genreLabel ?date_de_naissance ?lieu_de_naissance ?lieu_de_naissanceLabel WHERE {
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "fr". }
+query = """SELECT ?communard ?communardLabel ?sexe_ou_genreLabel ?date_de_naissance ?lieu_de_naissanceLabel ?conjointLabel (GROUP_CONCAT(DISTINCT ?occupationLabel; SEPARATOR = ", ") AS ?LeursoccupationsLabel) (GROUP_CONCAT(DISTINCT ?prenomLabel; SEPARATOR = ", ") AS ?prenoms) ?date_de_mort ?circonstances_de_la_mortLabel ?cause_de_la_mortLabel WHERE {
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "fr".
+    ?communard rdfs:label ?communardLabel.
+    ?sexe_ou_genre rdfs:label ?sexe_ou_genreLabel.
+    ?occupation rdfs:label ?occupationLabel.
+    ?lieu_de_naissance rdfs:label ?lieu_de_naissanceLabel.
+    ?conjoint rdfs:label ?conjointLabel.
+    ?prenom rdfs:label ?prenomLabel.
+    ?circonstances_de_la_mort rdfs:label ?circonstances_de_la_mortLabel.
+    ?cause_de_la_mort rdfs:label ?cause_de_la_mortLabel.
+  }
   ?communard wdt:P106 wd:Q1780490.
   OPTIONAL { ?communard wdt:P21 ?sexe_ou_genre. }
   OPTIONAL { ?communard wdt:P569 ?date_de_naissance. }
   OPTIONAL { ?communard wdt:P19 ?lieu_de_naissance. }
-}"""
+  OPTIONAL { ?communard wdt:P106 ?occupation. }
+  OPTIONAL { ?communard wdt:P26 ?conjoint. }
+  OPTIONAL { ?communard wdt:P735 ?prenom. }
+  OPTIONAL { ?communard wdt:P570 ?date_de_mort. }
+  OPTIONAL { ?communard wdt:P1196 ?circonstances_de_la_mort. }
+  OPTIONAL { ?communard wdt:P509 ?cause_de_la_mort. }
+  
+}
+GROUP BY ?communard ?communardLabel ?sexe_ou_genreLabel ?date_de_naissance ?lieu_de_naissanceLabel ?conjointLabel ?date_de_mort ?circonstances_de_la_mortLabel ?cause_de_la_mortLabel"""
 
 #------------------- Les classes objets ------------------------------------------------------------------------------------
 class Rapport():
@@ -275,6 +290,57 @@ Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y 
         self.rapport.fichier.write(contexte + "\n")
         self.rapport.fichier.write(f"![barres par années de naissance]({nom_graphique})"+ "\n")                
 
+    def occupation(self):
+        """ la requete est telle, que dans la colonne occupation une personne peut en avoir plusieurs.
+        meme structure que pour age, mais tout le monde à au moins 1 occupation : communard, donc pas besoin de try
+        par contre besoin d'aller chercher dans la liste"""
+        #--- mettre dans un dico le nombre de personnes par occupation
+        dico_occupation = {}
+        for i in range(len(self.df_tout_le_monde)):
+            occupS = self.df_tout_le_monde.loc[i,'LeursoccupationsLabel.value']
+            lst_occup = occupS.split(", ")
+            for j in lst_occup:
+                if j in dico_occupation:
+                        dico_occupation[j] += 1
+                else:
+                    dico_occupation[j] = 1 
+        nb_communard = dico_occupation['communard']
+        del dico_occupation['communard']
+        #print(dico_occupation)
+        # -- Transformer le dico en dataframe
+        df_occupation = pd.DataFrame(list(dico_occupation.items()),columns=['occupation', 'nb'])
+        df_occupation = df_occupation.sort_values(by='occupation')
+        # -- pour la lisibilité, 2 df, un pour ceux d'un seul métier, à transformer en texte à afficher. L'autre pour le graphique.
+        df_occupation_unique = df_occupation.loc[df_occupation['nb'] == 1]
+        txt_occupation_unique = ""
+        for i in range(df_occupation_unique.shape[0]):
+            txt_occupation_unique = txt_occupation_unique + ", " + df_occupation_unique.iloc[i,0]
+        txt_occupation_unique = txt_occupation_unique[2:]
+        #print(txt_occupation_unique)
+        df_occupation_multiple = df_occupation.loc[df_occupation['nb'] > 1]
+        # -- Graphique
+        sns.catplot(y="occupation", x="nb", kind="bar", data=df_occupation_multiple)
+        plt.xticks(rotation= 90)
+        plt.tight_layout()
+        nom_graphique = "barre_occupation.png"
+        chemin_graphique = "rapport/" + nom_graphique
+        plt.savefig(chemin_graphique)
+        #plt.show()
+        plt.close()
+        #----- Rapport
+        titre = "## Quelles étaient les occupations des communard·e·s ?" 
+        contexte = ("""Dans wikidata, on peut remplir la 'occupation' (P106) pour les personnes. Cela correspond approximativement à une profession. 
+C'est aussi un élément marquable. Ainsi le champs occupation peut inclure communard, c'est d'ailleurs par ce champs que l'on a fait l'extrait des personnes. \n
+Voyons comment se répartissent selon leur occupation les communard·e·s ayant une fiche dans wikidata. \n
+Pour facilité la lecture, les occupation exercé par une seule personne sont dans une liste, celels par plusieurs personnes dans un graphique.""")
+        #--- écriture
+        self.rapport.fichier.write(titre + "\n")
+        self.rapport.fichier.write(contexte + "\n")
+        self.rapport.fichier.write(f"![barres par occupation]({nom_graphique})"+ "\n") 
+        self.rapport.fichier.write(txt_occupation_unique+ "\n")
+
+            
+
     def converti_en_pdf(self):
         pass
                 
@@ -310,6 +376,11 @@ Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y 
             print("ville naissance : ok")
         except:
             print("ville naissance : error")
+        try:
+            self.occupation()
+            print("occupation : ok")
+        except:
+            print("occupation : error")
         try:
             self.converti_en_pdf()
             print("pdf non implémenté")            
