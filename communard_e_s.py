@@ -109,7 +109,8 @@ class Analyse():
         mettre dans une texte
         exporter dans le document rapport"""
         # pour être sur qu'il n'y a pas de doublons, utilisation d'un set
-        set_personne = self.df_tout_le_monde['communardLabel.value']
+        # C'est plus simple à lire avec un tri par ordre alphabetique (sort_values)
+        set_personne = self.df_tout_le_monde['communardLabel.value'].sort_values()
         # dans un string
         txt_qui = ""
         for personne in set_personne:
@@ -117,10 +118,10 @@ class Analyse():
         # pour retirer le dernie ", "
         txt_qui = txt_qui[:-2]
         # affichage de contrôle
-        # print(txt_qui)
+        #print(txt_qui)
         # mettre dans le rapport
         titre = "## Liste des personnes étudiées" 
-        contexte = "Simple liste de toutes les personnes avec leur appellation d'usage dans wikidata."
+        contexte = "Simple liste de toutes les personnes avec leur appellation d'usage dans wikidata. Par ordre alphabétique de l'item, le prénom le plus souvent."
         self.rapport.fichier.write(titre + "\n")
         self.rapport.fichier.write(contexte + "\n" + "\n")
         self.rapport.fichier.write(txt_qui+ "\n")
@@ -160,12 +161,12 @@ class Analyse():
         self.rapport.fichier.write(nombre+ "\n")
         self.rapport.fichier.write(f"![camembert par genre]({nom_graphique})"+ "\n")
 
-
     def ville_naissance(self):
         # Compte le nombre de personne par genre
         compte_ville = self.df_tout_le_monde['lieu_de_naissanceLabel.value'].value_counts()
         df_compte_ville = compte_ville.to_frame()
         df_compte_ville.reset_index(inplace = True)
+        df_compte_ville.sort_values(by = ['lieu_de_naissanceLabel.value','index'], inplace=True, ascending=False)
         #df_compte_ville.set_index([i for i in range(len(compte_ville))])
         print(df_compte_ville)
         #print(compte_ville)
@@ -177,7 +178,7 @@ class Analyse():
         #---------Dans le rapport
         titre = ("## D'où viennent les communard·e·s")
         contexte = ("""Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné.
-                    Comptons par ville combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s.""")
+                    Comptons par ville combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s. \n Trie par nombre descoissant de personne et ordre inverse de l'alphabet""")
         nombre = md_tableau_compte
         self.rapport.fichier.write(titre + "\n")
         self.rapport.fichier.write(contexte + "\n")
@@ -235,7 +236,6 @@ class Analyse():
         self.converti_en_pdf()
 
 if __name__ == "__main__":
-    #r = Rapport()
     r2 = Analyse(endpoint_url, query)
     #print(r2.df_tout_le_monde)
     #r2.liste_des_personnes()
