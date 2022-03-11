@@ -1,5 +1,24 @@
 #! /usr/bin/env python3
 # coding: utf-8
+"""Author : Gabriel-le / silanoc
+Date : mars 2022
+
+Description :
+- ce programme interroge l'API Wikidata, via https://query.wikidata.org/sparql
+- il est optimisé pour faire une requête autour des communard·e·s (personnes ayant participées à la Commune de Paris de 1871
+- il peut être facilement modifié pour s'adapter à une autre requête
+- il transforme le résultat de la requête en un dataframe (pandas)
+- un certain nombre d'analyse est faite : ratio par genre, origine des personnes...
+- un résultat textuel ou chiffré est fait, et si possible un graphique (seaborn).
+- tous ces résultats sont écrit dans fichier .md (Markdown) en vue d'être converti en pdf
+- on a donc un pipeline de la collecte de données à leur présentation en passant par leur traitement.
+- que ce soit la requête, les analyses/graphique, écriture du rapport tout est recalculé à chaque fois, avec écriture par dessus !
+
+Architecture :
+- deux classes objets.
+- Rapport : c'est lui qui créé le fichier md et les premières lignes génériques.
+- Analyse : créé une instance de rapport, fait les analyses et les écrits dans rapport
+"""
 
 #--------------------- Les imports----------------------------------------------------------------------------------------
 import sys
@@ -19,10 +38,10 @@ import seaborn as sns
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 #-------------------- Requêter wikidata ---------------------------------------------------------------------------------
-"""Comme le projet se fait à partir de wikidata, il nous faut deux variables
-- url pour faire les requeste sur wikidata
+"""Comme le projet se fait à partir l'API wikidata, il nous faut deux variables
+- endpoint_url pour faire les requeste sur wikidata
 - la requete en elle même, en sparl faite sur https://query.wikidata.org/
--- on peut metre une autre reqûete à la place, il faudra juste que les entêtes soient concordants 
+-- on peut metre une autre requête à la place, il faudra juste que les entêtes soient concordants 
 --- comme wikidata propose des ente standardisé, il suffit de ne pas les changer """
 
 endpoint_url = "https://query.wikidata.org/sparql"
@@ -37,10 +56,15 @@ query = """SELECT ?communard ?communardLabel ?pr_nom ?pr_nomLabel ?sexe_ou_genre
 
 #------------------- Les classes objets ------------------------------------------------------------------------------------
 class Rapport():
-    """Création d'un doc .md qui receuillera tous les resultats.
+    """Création d'un fichier .md qui receuillera tous les resultats.
+    Le place dans un dossier rapport, sous-dossier d'où est lancé le programme.
     Méthode : creation/ouverture"""
     def __init__(self):
+        """création du fichier en utilisant la méthode creation
+        Ajoute un titre, des métdonnées textuelles et une intro au format md"""
+        #--- création ---
         self.creation()
+        #--- variables textes ---
         self.date = datetime.datetime.now()
         titre = "# Tout savoir des communard·e·s de Wikidata"
         meta_authaire = f"- authair : Gabriel-le"
@@ -52,6 +76,7 @@ Fait par Gabriel-le avec les éléments connues dans wikidata le 9 mars 2022."""
 Wikidata est une base de données libre, liée à Wikipédia. Son remplissage est fait de façon collaborative. \n
 Ce document est fait à partir des éléments s'y trouvants le {self.date.day}/{self.date.month}/{self.date.year} à {self.date.hour}h{self.date.minute}. \n
 Sont pris en compte toutes les personne dont le champs 'occupation' (P21) comprends la valeur 'communard' (Q1780490)'."""
+        #--- écriture sur le fichier
         self.fichier.write(titre + "\n")
         self.fichier.write(intro + "\n")
         self.fichier.write(meta_authaire + "\n")
@@ -59,53 +84,64 @@ Sont pris en compte toutes les personne dont le champs 'occupation' (P21) compre
         self.fichier.write(methodologie + "\n")
 
     def creation(self):
-        # Création du dossier qui contiendra le rappor et tout se qui en dépend
+        """méthode appelé par __init__
+        création du dossier et du fichier dedans
+        try/except au cas où"""
+        # Création du dossier qui contiendra le rapport et tout ce qui en dépend
         try:
             os.mkdir('rapport')
+            print("dossier 'rapport' créé")
         except:
-            pass
+            print("dossier non créé")
         # Création du fichier en lui même. En écriture, écrit par dessus s'il existe
         try:
             self.titre_rapport = "Tout_savoir_des_communard_e_s_de_wikidata.md"
             self.chemin_titre = "rapport/" + self.titre_rapport
             self.fichier = open(self.chemin_titre, "w")
+            print("fichier 'Tout_savoir_des_communard_e_s_de_wikidata.m' créé")            
         except:
-            pass
+            print("fichier non créé")
 
 
 class Analyse():
     """C'est l'élement clef du programme.
     Fait une requete sur wikidata et mets les resultats dans une instance de Rapport.
     Pour cela :
-    - on utilse une requete dont la formulation est proposé par wikidata. C'est requete_wikidata
-    - avec pandas on transforme ce résultat en pandas pour en faire des traitements d'analyse."""
+    - on utilise une requete dont la formulation est proposé par wikidata. C'est requete_wikidata.
+    - avec pandas on transforme ce résultat en pandas pour en faire des traitements d'analyse.
+    - avec seaborn on fait les graphique
+    """
 
     def __init__(self,endpoint_url, query):
-        """à l'initialisation, la requete est exécuté via une méthode 
-        et retourné dans le dataframe qui servira de référence"""
+        """à l'initialisation, la requete est exécutée via une méthode 
+        et le résultat retourné dans le dataframe qui servira de référence"""
+        #--- variable de la requete et le dataframe de référence
         self.endpoint_url = endpoint_url
         self.query = query
         self.df_tout_le_monde = self.requete_wikidata()
+        #--- pour savoir combien al y a de communard·e·s
         self.nb_de_personne = self.df_tout_le_monde.shape[0]
+        #--- création de l'instance de Rapport, dans laquelle on écrit tout
         self.rapport = Rapport()
 
     def requete_wikidata(self):
-        """exécuter la requet et mettre le résultat dans un dataframe"""
-        # requête
+        """exécuter la requete et mettre le résultat dans un dataframe"""
+        #--- requête
         user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
         sparql = SPARQLWrapper(self.endpoint_url, agent=user_agent)
         sparql.setQuery(self.query)
         sparql.setReturnFormat(JSON)
-        # transformation en dataframe
+        #--- transformation en dataframe
         results = sparql.query().convert()
         df_results = pd.json_normalize(results["results"]["bindings"])
-        # renvoie
+        #--- renvoie
         return df_results
 
     def a_propos_du_df(self):
         """pour avoir des infos sur le df"""
         print("shape")
         print(self.df_tout_le_monde.shape)
+        # très important pour avoir les initulés des colonnes !
         print("colonnes")
         print(self.df_tout_le_monde.columns)
         print("info")
@@ -115,85 +151,92 @@ class Analyse():
         """Faire la liste de toutes les personnes concernées.
         mettre dans une texte
         exporter dans le document rapport"""
-        # pour être sur qu'il n'y a pas de doublons, utilisation d'un set
-        # C'est plus simple à lire avec un tri par ordre alphabetique (sort_values)
+        #--- pour être sur qu'il n'y a pas de doublons, utilisation d'un set
+        #--- C'est plus simple à lire avec un tri par ordre alphabetique (sort_values)
         set_personne = self.df_tout_le_monde['communardLabel.value'].sort_values()
-        # dans un string
+        #--- mettre dans un srting 
         txt_qui = ""
         for personne in set_personne:
             txt_qui = txt_qui + personne + ", "
-        # pour retirer le dernie ", "
+        #--- pour retirer le dernie ", "
         txt_qui = txt_qui[:-2]
-        # affichage de contrôle
+        #--- affichage de contrôle
         #print(txt_qui)
-        # mettre dans le rapport
+        #--- mettre dans le rapport
         titre = "## Liste des personnes étudiées" 
         contexte = f"Simple liste des {len(set_personne)} personnes avec leur appellation d'usage dans wikidata. Par ordre alphabétique de l'item, le prénom le plus souvent."
         self.rapport.fichier.write(titre + "\n")
         self.rapport.fichier.write(contexte + "\n" + "\n")
-        self.rapport.fichier.write(txt_qui+ "\n")
+        self.rapport.fichier.write(txt_qui + "\n")
 
     def genre(self):
         """Compte le nombre de personne par genre et en fait un camembert"""
-        #-------- compte
-        # Compte le nombre de personne par genre
+        #----- compte
+        #--- Compte le nombre de personne par genre
         compte_genre = self.df_tout_le_monde['sexe_ou_genreLabel.value'].value_counts()
-        # Attribuer les valeurs pour masculin, féminin, autre/non attribués
+        #--- Attribuer les valeurs pour masculin, féminin, autre/non attribués
         compte_masculin = compte_genre[0]
         compte_feminin = compte_genre[1]
         compte_autre = int(self.nb_de_personne) - int(compte_masculin) - int(compte_feminin)
-        #-------- Graphique
-        # convertie la serie en df et renome les colonnes
+        #----- Graphique
+        #--- convertie la serie en df et renomme les colonnes
         df_compte_genre = compte_genre.to_frame()
-        df_compte_genre = df_compte_genre.rename(columns = {'':'genre'})
-        df_compte_genre = df_compte_genre.rename(columns = {'sexe_ou_genreLabel.value':'nombre'})
-        print(df_compte_genre)
-        # graph en lui même
+        df_compte_genre = df_compte_genre.rename(columns = {'' : 'genre'})
+        df_compte_genre = df_compte_genre.rename(columns = {'sexe_ou_genreLabel.value' : 'nombre'})
+        #print(df_compte_genre)
+        #--- graph en lui même
         colors = sns.color_palette('deep')[0:4:3]
         labels = ["masculin", "féminin"]
         plt.pie(data = df_compte_genre, x = df_compte_genre['nombre'], labels = labels, colors = colors, autopct='%.0f%%')
         nom_graphique = "camembert_genre.png"
         chemin_graphique = "rapport/" + nom_graphique
         plt.savefig(chemin_graphique)
-        # plt.show()
+        #plt.show()
         plt.close()
-        #-------- Dans le rapport
+        #----- Dans le rapport
+        #--- variable
         titre = ("## Répartition par genre")
         contexte = ("""Dans wikidata, on peut remplir le 'sexe ou genre' (P21) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné.
                     Voyons comment se répartissent selon leur genre les communard·e·s ayant une fiche dans wikidata.""")
         nombre = (f"Sur {self.nb_de_personne}, il y a {compte_feminin} femmes, {compte_masculin} hommes, et {compte_autre} personne dont le genre n'est pas renseigné ou autre")
-        df = df_compte_genre
+        #--- ecriture
         self.rapport.fichier.write(titre + "\n")
         self.rapport.fichier.write(contexte + "\n")
         self.rapport.fichier.write(nombre+ "\n")
         self.rapport.fichier.write(f"![camembert par genre]({nom_graphique})"+ "\n")
 
     def ville_naissance(self):
-        # Compte le nombre de personne par genre
+        """ Compte le nombre de personne par lieu de naissance.
+        Création d'un tableau au format md avec des |"""
+        #--- Compte le nombre de personne par lieu de naissance
         compte_ville = self.df_tout_le_monde['lieu_de_naissanceLabel.value'].value_counts()
         df_compte_ville = compte_ville.to_frame()
         df_compte_ville.reset_index(inplace = True)
         df_compte_ville.sort_values(by = ['lieu_de_naissanceLabel.value','index'], inplace=True, ascending=False)
-        #df_compte_ville.set_index([i for i in range(len(compte_ville))])
+        #- Contrôle
         #print(df_compte_ville)
-        #print(compte_ville)
+        #--- Création du tableau
+        #- les 2 premières lignes
         md_tableau_compte = """|Ville de naissance|Nombre de personne| \n |---|---| \n"""
+        #- boucles sur le df pour créer toutes les lignes
         for i in range(len(df_compte_ville)):
-            #print(df_compte_ville.iloc[i,0])
             md_tableau_compte += f"|{df_compte_ville.iloc[i,0]}|{df_compte_ville.iloc[i,1]}| \n"
+        #- Contrôle
         #print(md_tableau_compte)
         #---------Dans le rapport
         titre = ("## D'où viennent les communard·e·s")
-        contexte = ("""Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné.
-                    Comptons par ville combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s. \n Trie par nombre descoissant de personne et ordre inverse de l'alphabet""")
+        contexte = ("""Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné. \n
+                    le plus souvent il s'agit d'une ville, mais al peut y avoir un arrondissement, pays... \n
+                    Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s. \n Trie par nombre descoissant de personne et ordre inverse de l'alphabet""")
         nombre = md_tableau_compte
+        #--- écriture
         self.rapport.fichier.write(titre + "\n")
         self.rapport.fichier.write(contexte + "\n")
         self.rapport.fichier.write(nombre+ "\n")    
 
     def annee_naissance(self):
-        #compte_ville = self.df_tout_le_monde['date_de_naissance.value'].value_counts()
-        #print(compte_ville)
+        """Compte dans un dictionnaire le nombre de personne par années de naissance et en faire un graphique en barre"""
+        #--- Compter el nombre de personne par année de naissance
         dico_date={}
         for i in range(len(self.df_tout_le_monde)):
             # chercher la date de naissance par ligne, et en prendre que les 4 premier caractère qui corresponde à l'année
@@ -227,6 +270,7 @@ class Analyse():
         titre = ("## Répartition par année de naissance")
         contexte = ("""Dans wikidata, on peut remplir la 'date de naissance' (P569) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné.
                     Voyons comment se répartissent selon leur naissance, donc âge les communard·e·s ayant une fiche dans wikidata.""")
+        #--- écriture
         self.rapport.fichier.write(titre + "\n")
         self.rapport.fichier.write(contexte + "\n")
         self.rapport.fichier.write(f"![barres par années de naissance]({nom_graphique})"+ "\n")                
@@ -235,20 +279,46 @@ class Analyse():
         pass
                 
     def pipeline(self):
-        self.requete_wikidata()
-        self.liste_des_personnes()
-        self.genre()
-        self.annee_naissance()
-        self.ville_naissance()
-        self.converti_en_pdf()
+        try:
+            self.requete_wikidata()
+            print("requete : ok")
+        except:
+            print("requete : error")
+        try:
+            print("-----------------")        
+            self.a_propos_du_df()
+            print("-----------------")   
+        except:
+            print("à propos du df : error")
+        try:
+            self.liste_des_personnes()
+            print("liste personnes : ok")
+        except:
+            print("liste personnes : error")
+        try:
+            self.genre()
+            print("genre : ok")
+        except:
+            print("genre : error")
+        try:
+            self.annee_naissance()
+            print("année naissance : ok")
+        except:
+            print("année naissance : error")
+        try:
+            self.ville_naissance()
+            print("ville naissance : ok")
+        except:
+            print("ville naissance : error")
+        try:
+            self.converti_en_pdf()
+            print("pdf non implémenté")            
+        except:
+            print("pdf : error")
+
 
 if __name__ == "__main__":
+    print("début traitement")
     r2 = Analyse(endpoint_url, query)
-    #print(r2.df_tout_le_monde)
-    #r2.liste_des_personnes()
-    #r2.genre()
-    #r2.ville_naissance()
-    #r2.annee_naissance()
-    #r2.converti_en_pdf()
     r2.pipeline()
-    print("fini")
+    print("fin traitement")
