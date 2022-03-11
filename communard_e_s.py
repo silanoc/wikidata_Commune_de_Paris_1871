@@ -291,9 +291,9 @@ Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y 
         self.rapport.fichier.write(f"![barres par années de naissance]({nom_graphique})"+ "\n")                
 
     def occupation(self):
-        """ la requete est telle, que dans la colonne occupation une personne peut en avoir plusieurs.
-        meme structure que pour age, mais tout le monde à au moins 1 occupation : communard, donc pas besoin de try
-        par contre besoin d'aller chercher dans la liste"""
+        """ La requête est telle, que dans la colonne occupation une personne peut en avoir plusieurs.
+Même structure que pour âge, mais tout le monde à au moins 1 occupation : communard, donc pas besoin de try
+Par contre besoin d'aller chercher dans la liste des occupation le cas échéant"""
         #--- mettre dans un dico le nombre de personnes par occupation
         dico_occupation = {}
         for i in range(len(self.df_tout_le_monde)):
@@ -304,13 +304,14 @@ Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y 
                         dico_occupation[j] += 1
                 else:
                     dico_occupation[j] = 1 
+        # -- comme tout le monde est communard, garde la valeur de controle dans une variable et supprime du dico
         nb_communard = dico_occupation['communard']
         del dico_occupation['communard']
         #print(dico_occupation)
         # -- Transformer le dico en dataframe
-        df_occupation = pd.DataFrame(list(dico_occupation.items()),columns=['occupation', 'nb'])
+        df_occupation = pd.DataFrame(list(dico_occupation.items()), columns=['occupation', 'nb'])
         df_occupation = df_occupation.sort_values(by='occupation')
-        # -- pour la lisibilité, 2 df, un pour ceux d'un seul métier, à transformer en texte à afficher. L'autre pour le graphique.
+        # -- lisibilité : 2 df, un pour ceux d'un seul métier, à transformer en texte à afficher. L'autre pour le graphique.
         df_occupation_unique = df_occupation.loc[df_occupation['nb'] == 1]
         txt_occupation_unique = ""
         for i in range(df_occupation_unique.shape[0]):
@@ -319,8 +320,8 @@ Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y 
         #print(txt_occupation_unique)
         df_occupation_multiple = df_occupation.loc[df_occupation['nb'] > 1]
         # -- Graphique
-        sns.catplot(y="occupation", x="nb", kind="bar", data=df_occupation_multiple)
-        plt.xticks(rotation= 90)
+        sns.catplot(y = "occupation", x = "nb", kind = "bar", data = df_occupation_multiple)
+        plt.xticks(rotation = 90)
         plt.tight_layout()
         nom_graphique = "barre_occupation.png"
         chemin_graphique = "rapport/" + nom_graphique
@@ -329,15 +330,16 @@ Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y 
         plt.close()
         #----- Rapport
         titre = "## Quelles étaient les occupations des communard·e·s ?" 
-        contexte = ("""Dans wikidata, on peut remplir la 'occupation' (P106) pour les personnes. Cela correspond approximativement à une profession. 
-C'est aussi un élément marquable. Ainsi le champs occupation peut inclure communard, c'est d'ailleurs par ce champs que l'on a fait l'extrait des personnes. \n
+        contexte = ("""Dans wikidata, on peut remplir la propriété « occupation » (P106) pour les personnes. Cela correspond approximativement à une profession.
+C'est aussi un élément remarquable de la personne. Ainsi le champ occupation peut inclure communard, c'est d'ailleurs par ce champ que l'on a fait l'extrait des personnes. \n
 Voyons comment se répartissent selon leur occupation les communard·e·s ayant une fiche dans wikidata. \n
-Pour facilité la lecture, les occupation exercé par une seule personne sont dans une liste, celels par plusieurs personnes dans un graphique.""")
+Pour faciliter la lecture, les occupations exercées par une seule personne sont dans une liste, celles par plusieurs personnes dans un graphique.""")
         #--- écriture
         self.rapport.fichier.write(titre + "\n")
         self.rapport.fichier.write(contexte + "\n")
-        self.rapport.fichier.write(f"![barres par occupation]({nom_graphique})"+ "\n") 
         self.rapport.fichier.write(txt_occupation_unique+ "\n")
+        self.rapport.fichier.write(f"![barres par occupation]({nom_graphique})"+ "\n") 
+        
 
             
 

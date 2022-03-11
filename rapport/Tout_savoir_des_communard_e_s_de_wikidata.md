@@ -6,12 +6,12 @@ Fait par Gabriel-le avec les éléments connues dans wikidata le 9 mars 2022.
 - date de création du script : 9 mars 2022, 
 - dernière version : 11 mars 2022 
 
-- rapport généré le : 11/3/2022 à 22h30 
+- rapport généré le : 11/3/2022 à 22h51 
 ## Méthodologie 
 
 Wikidata est une base de données libre, liée à Wikipédia. Son remplissage est fait de façon collaborative. 
 
-Ce document est fait à partir des éléments s'y trouvants le 11/3/2022 à 22h30. 
+Ce document est fait à partir des éléments s'y trouvants le 11/3/2022 à 22h51. 
 
 Sont pris en compte toutes les personne dont le champs 'occupation' (P21) comprends la valeur 'communard' (Q1780490)'.
 ## Liste des personnes étudiées
@@ -187,11 +187,11 @@ Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y 
 |Albi|1| 
 
 ## Quelles étaient les occupations des communard·e·s ?
-Dans wikidata, on peut remplir la 'occupation' (P106) pour les personnes. Cela correspond approximativement à une profession. 
-C'est aussi un élément marquable. Ainsi le champs occupation peut inclure communard, c'est d'ailleurs par ce champs que l'on a fait l'extrait des personnes. 
+Dans wikidata, on peut remplir la propriété « occupation » (P106) pour les personnes. Cela correspond approximativement à une profession.
+C'est aussi un élément remarquable de la personne. Ainsi le champ occupation peut inclure communard, c'est d'ailleurs par ce champ que l'on a fait l'extrait des personnes. 
 
 Voyons comment se répartissent selon leur occupation les communard·e·s ayant une fiche dans wikidata. 
 
-Pour facilité la lecture, les occupation exercé par une seule personne sont dans une liste, celels par plusieurs personnes dans un graphique.
-![barres par occupation](barre_occupation.png)
+Pour faciliter la lecture, les occupations exercées par une seule personne sont dans une liste, celles par plusieurs personnes dans un graphique.
 Maçons de la Creuse, artilleur, artisan, artiste, artiste graphique, assureur, astronome, autobiographe, aérostier, boxeur, bronzier, caissier de banque, caricaturiste, cartographe, chapelier, charpentier, chaudronnier, cheminot, chercheur, chimiste, clerc de notaire, collectionneur, collectionneur d'œuvres d'art, commerçant, commissaire-priseur, conseiller municipal, correcteur, corsetier, coutelier, critique dramatique, cuisinier, directeur d'école, entraîneur de boxe, entrepreneur, fabricante de casquette, femme de lettres, fonctionnaire, fondeur, franc-tireur, gouvernante, géographe, haut fonctionnaire, historien, homme de lettres, ingénieur des mines, intellectuel, journaliste d'opinion, lingier, lingère, marchand d'art, maroquinier, mathématicien, maçon, maître d'armes, maître d'école, menuisier, militant politique, orfèvre, pamphlétaire, paramédic, parfumeur, passementier ou passementière, peintre sur porcelaine, personnalité du monde des affaires, pharmacien, physicien, professeur, professeur d'université, professeur des écoles, prostitué, pédagogue, restaurateur, sculpteur, tailleur de pierre, universitaire, vannier, vendeur, verrier, vétérinaire, écrivain de science-fiction
+![barres par occupation](barre_occupation.png)
