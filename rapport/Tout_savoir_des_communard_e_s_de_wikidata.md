@@ -6,12 +6,12 @@ Fait par Gabriel-le avec les éléments connues dans wikidata le 9 mars 2022.
 - date de création du script : 9 mars 2022, 
 - dernière version : 11 mars 2022 
 
-- rapport généré le : 11/3/2022 à 18h22 
+- rapport généré le : 11/3/2022 à 18h27 
 ## Méthodologie 
 
 Wikidata est une base de données libre, liée à Wikipédia. Son remplissage est fait de façon collaborative. 
 
-Ce document est fait à partir des éléments s'y trouvants le 11/3/2022 à 18h22. 
+Ce document est fait à partir des éléments s'y trouvants le 11/3/2022 à 18h27. 
 
 Sont pris en compte toutes les personne dont le champs 'occupation' (P21) comprends la valeur 'communard' (Q1780490)'.
 ## Liste des personnes étudiées
