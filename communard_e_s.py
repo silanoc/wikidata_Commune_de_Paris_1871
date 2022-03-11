@@ -4,6 +4,7 @@
 #--------------------- Les imports----------------------------------------------------------------------------------------
 import sys
 import os
+import datetime
 #-------
 import pandas as pd
 #-------
@@ -27,7 +28,7 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 endpoint_url = "https://query.wikidata.org/sparql"
 
 query = """SELECT ?communard ?communardLabel ?pr_nom ?pr_nomLabel ?sexe_ou_genre ?sexe_ou_genreLabel ?date_de_naissance ?lieu_de_naissance ?lieu_de_naissanceLabel WHERE {
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "fr". }
   ?communard wdt:P106 wd:Q1780490.
   OPTIONAL { ?communard wdt:P21 ?sexe_ou_genre. }
   OPTIONAL { ?communard wdt:P569 ?date_de_naissance. }
@@ -40,15 +41,21 @@ class Rapport():
     Méthode : creation/ouverture"""
     def __init__(self):
         self.creation()
+        self.date = datetime.datetime.now()
         titre = "# Tout savoir des communard·e·s de Wikidata"
+        meta_authaire = f"- authair : Gabriel-le"
+        meta_date = f"""- date de création du script : 9 mars 2022, \n- dernière version : 11 mars 2022 \n
+- rapport généré le : {self.date.day}/{self.date.month}/{self.date.year} à {self.date.hour}h{self.date.minute} """
         intro = """Présentation à partir des éléments de Wikidata à propos des personnes qui ont fait la Commune de Paris 1871. \n
 Fait par Gabriel-le avec les éléments connues dans wikidata le 9 mars 2022."""
-        methodologie = """## Méthodologie \n
+        methodologie = f"""## Méthodologie \n
 Wikidata est une base de données libre, liée à Wikipédia. Son remplissage est fait de façon collaborative. \n
-Ce document est fait à partir des éléments s'y trouvants le 9 mars 2022. \n
+Ce document est fait à partir des éléments s'y trouvants le {self.date.day}/{self.date.month}/{self.date.year} à {self.date.hour}h{self.date.minute}. \n
 Sont pris en compte toutes les personne dont le champs 'occupation' (P21) comprends la valeur 'communard' (Q1780490)'."""
         self.fichier.write(titre + "\n")
         self.fichier.write(intro + "\n")
+        self.fichier.write(meta_authaire + "\n")
+        self.fichier.write(meta_date + "\n")
         self.fichier.write(methodologie + "\n")
 
     def creation(self):
@@ -121,7 +128,7 @@ class Analyse():
         #print(txt_qui)
         # mettre dans le rapport
         titre = "## Liste des personnes étudiées" 
-        contexte = "Simple liste de toutes les personnes avec leur appellation d'usage dans wikidata. Par ordre alphabétique de l'item, le prénom le plus souvent."
+        contexte = f"Simple liste des {len(set_personne)} personnes avec leur appellation d'usage dans wikidata. Par ordre alphabétique de l'item, le prénom le plus souvent."
         self.rapport.fichier.write(titre + "\n")
         self.rapport.fichier.write(contexte + "\n" + "\n")
         self.rapport.fichier.write(txt_qui+ "\n")
@@ -168,13 +175,13 @@ class Analyse():
         df_compte_ville.reset_index(inplace = True)
         df_compte_ville.sort_values(by = ['lieu_de_naissanceLabel.value','index'], inplace=True, ascending=False)
         #df_compte_ville.set_index([i for i in range(len(compte_ville))])
-        print(df_compte_ville)
+        #print(df_compte_ville)
         #print(compte_ville)
         md_tableau_compte = """|Ville de naissance|Nombre de personne| \n |---|---| \n"""
         for i in range(len(df_compte_ville)):
             #print(df_compte_ville.iloc[i,0])
             md_tableau_compte += f"|{df_compte_ville.iloc[i,0]}|{df_compte_ville.iloc[i,1]}| \n"
-        print(md_tableau_compte)
+        #print(md_tableau_compte)
         #---------Dans le rapport
         titre = ("## D'où viennent les communard·e·s")
         contexte = ("""Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné.
