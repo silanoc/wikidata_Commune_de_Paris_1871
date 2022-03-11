@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # coding: utf-8
-"""Author : Gabriel-le / silanoc
+"""Author : Gabriel-le / Silanoc
 Date : mars 2022
 
 Description :
@@ -67,7 +67,7 @@ class Rapport():
         #--- variables textes ---
         self.date = datetime.datetime.now()
         titre = "# Tout savoir des communard·e·s de Wikidata"
-        meta_authaire = f"- authair : Gabriel-le"
+        meta_autaire = f"- autaire : Gabriel-le"
         meta_date = f"""- date de création du script : 9 mars 2022, \n- dernière version : 11 mars 2022 \n
 - rapport généré le : {self.date.day}/{self.date.month}/{self.date.year} à {self.date.hour}h{self.date.minute} """
         intro = """Présentation à partir des éléments de Wikidata à propos des personnes qui ont fait la Commune de Paris 1871. \n
@@ -79,7 +79,7 @@ Sont pris en compte toutes les personne dont le champs 'occupation' (P21) compre
         #--- écriture sur le fichier
         self.fichier.write(titre + "\n")
         self.fichier.write(intro + "\n")
-        self.fichier.write(meta_authaire + "\n")
+        self.fichier.write(meta_autaire + "\n")
         self.fichier.write(meta_date + "\n")
         self.fichier.write(methodologie + "\n")
 
@@ -226,8 +226,8 @@ class Analyse():
         #---------Dans le rapport
         titre = ("## D'où viennent les communard·e·s")
         contexte = ("""Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné. \n
-                    le plus souvent il s'agit d'une ville, mais al peut y avoir un arrondissement, pays... \n
-                    Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s. \n Trie par nombre descoissant de personne et ordre inverse de l'alphabet""")
+le plus souvent il s'agit d'une ville, mais al peut y avoir un arrondissement, pays... \n
+Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s. \n Trie par nombre descoissant de personne et ordre inverse de l'alphabet""")
         nombre = md_tableau_compte
         #--- écriture
         self.rapport.fichier.write(titre + "\n")

@@ -2,16 +2,16 @@
 Présentation à partir des éléments de Wikidata à propos des personnes qui ont fait la Commune de Paris 1871. 
 
 Fait par Gabriel-le avec les éléments connues dans wikidata le 9 mars 2022.
-- authair : Gabriel-le
+- autaire : Gabriel-le
 - date de création du script : 9 mars 2022, 
 - dernière version : 11 mars 2022 
 
-- rapport généré le : 11/3/2022 à 18h27 
+- rapport généré le : 11/3/2022 à 18h37 
 ## Méthodologie 
 
 Wikidata est une base de données libre, liée à Wikipédia. Son remplissage est fait de façon collaborative. 
 
-Ce document est fait à partir des éléments s'y trouvants le 11/3/2022 à 18h27. 
+Ce document est fait à partir des éléments s'y trouvants le 11/3/2022 à 18h37. 
 
 Sont pris en compte toutes les personne dont le champs 'occupation' (P21) comprends la valeur 'communard' (Q1780490)'.
 ## Liste des personnes étudiées
@@ -30,9 +30,9 @@ Dans wikidata, on peut remplir la 'date de naissance' (P569) pour les personnes.
 ## D'où viennent les communard·e·s
 Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné. 
 
-                    le plus souvent il s'agit d'une ville, mais al peut y avoir un arrondissement, pays... 
+le plus souvent il s'agit d'une ville, mais al peut y avoir un arrondissement, pays... 
 
-                    Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s. 
+Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s. 
  Trie par nombre descoissant de personne et ordre inverse de l'alphabet
 |Ville de naissance|Nombre de personne| 
  |---|---| 
