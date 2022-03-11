@@ -2,33 +2,41 @@
 Présentation à partir des éléments de Wikidata à propos des personnes qui ont fait la Commune de Paris 1871. 
 
 Fait par Gabriel-le avec les éléments connues dans wikidata le 9 mars 2022.
+- authair : Gabriel-le
+- date de création du script : 9 mars 2022, 
+- dernière version : 11 mars 2022 
+
+- rapport généré le : 11/3/2022 à 18h22 
 ## Méthodologie 
 
 Wikidata est une base de données libre, liée à Wikipédia. Son remplissage est fait de façon collaborative. 
 
-Ce document est fait à partir des éléments s'y trouvants le 9 mars 2022. 
+Ce document est fait à partir des éléments s'y trouvants le 11/3/2022 à 18h22. 
 
 Sont pris en compte toutes les personne dont le champs 'occupation' (P21) comprends la valeur 'communard' (Q1780490)'.
 ## Liste des personnes étudiées
-Simple liste de toutes les personnes avec leur appellation d'usage dans wikidata. Par ordre alphabétique de l'item, le prénom le plus souvent.
+Simple liste des 236 personnes avec leur appellation d'usage dans wikidata. Par ordre alphabétique de l'item, le prénom le plus souvent.
 
-Achille Ballière, Adolf Rozwadowski, Adolphe Assi, Adolphe Clémence, Adrien Lejeune, Adèle Esquiros, Adélaïde Valentin, Albert Regnard, Albert Theisz, Alexandre Girault, Alexis Louis Trinquet, Alfred-Édouard Billioray, Alix Payen, Alphonse Humbert, Alphonse Nicolas Lonclas, Amilcare Cipriani, Aminthe Dupont, Amélie Payen, André Bastelica, André Slomszynski, Angelina Courcelles, Anna Henryka Pustowojtowna, Anne-Marie Ménand, Antoine Demay, Antonin Desfarges, Aristide Claris, Armand Antoine Jules Arnaud, Armand Félix Marie Jobbé-Duval, Arthur, Arthur Ranc, Auguste Adolphe Okolowicz, Auguste Durassier, Auguste Serraillier, Auguste Sicard, Auguste Viard, Auguste-Jean-Marie Vermorel, Augustin Avrial, Augustin Verdure, Baptiste Descamps, Benjamin Barré, Benoît Malon, Blanche Lefebvre, Blanche de Corbie, Béatrix Excoffon, Camille Bias, Camille Langevin, Charles Amouroux, Charles Beslay, Charles Ferdinand Gambon, Charles François Ledroit, Charles Gérardin, Charles Longuet, Charles Lullier, Charles Ostyn, Charles Élie Ducoudray, Claude Dominique Napias, Claude Payet, Claude-Jules Duruof, Clovis Dupont, Clériot, Colonel Delorme, Constant Marie, Constantin Kawecki, Coralie Chérelle, Céleste Hardouin, Dominique Régère, Edgar Monteil, Edmond-Alfred Goupy, Elisabeth Dmitrieff, Elisabeth Javelin, Eliska Vincent, Emmanuel Chauvière, Ernest Granger, Ernest Puget, Eugenio Defendi, Eugène Gérardin, Eugène Pottier, Eugène Protot, Eugène Razoua, Eugène Varlin, Eugène Vermersch, Eugénie Boulanger, Eugénie Chilly, Eulalie Papavoine, Florence Baruteau, Florence Van de Walle, Fornarina de Fonseca, Fortuné Henry, François Edmond Rattier, François Jourde, François Louis Parisel, Frédéric Cournet, Félix Pyat, Gabriel Ranvier, Galdric Verdaguer, Gaston Da Costa, Gaston Save, Georges Arnold, Georges Cavalier, Giovanni Defendi, Gustave Courbet, Gustave Flourens, Gustave Lefrançais, Gustave Maroteau, Gustave Paul Cluseret, Gustave Tridon, Henri Brissac, Henri Chouteau, Henri Mortier, Henri Payen, Henri Ranvier, Henri Ranvier, Henri Rochefort, Henri Rochefort, Henry Bauër, Henry Louis Champy, Herminie Cadolle, Hortense David, Hortense Machu, Hubert Geresme, Jacques Louis Durand, Jarosław Dąbrowski, Jean Allemane, Jean Charles Rouchy, Jean-Baptiste Chardon, Jean-Baptiste Clément, Jean-Baptiste Noro, Jean-Jacques Pillot, Jean-Louis Pindy, Joseph Charlemont, Joséphine Marchais, Joséphine Michel Bocquin, Jules Allix, Jules Andrieu, Jules Babick, Jules Bergeret, Jules Fontaine, Jules François Alexandre Joffrin, Jules Honoré Vinot, Jules Martelet, Jules Miot, Jules Montels, Jules Vallès, Jules-Ferdinand Baulard, Jules-Paul Johannard, Julie Magot, Julien Fruneau, Julien Tanguy, Kswaiera Ladojska Kawecka, Laure Boulant, Leó Frankel, Lise Bourette, Louis Auguste Blanqui, Louis Charles Delescluze, Louis Rossel, Louis-Augustin Rogeard, Louis-Charles Maljournal, Louis-Denis Chalain, Louis-Guillaume Debock, Louis-Simon Dereure, Louise Bonenfant, Louise Bonnehaut, Louise Boutin, Louise Laffitte, Louise Michel, Louise Neckbecker, Louise Talbot, Lucie Bocquin, Lucie Maris, Lucien Henry, Lucienne Prins, Léo Melliet, Léontine Suétens, Marc-Amédée Gromier, Marguerite Lachaise, Maria Pantazi, Marie Catherine Rogissart, Marie Christine Dargent, Marie Ferré, Marie La Cécilia, Marie Lecourt, Marie Manière, Marie Mercier, Marie-Jeanne Moussu, Maurice Garreau, Maurice Garreau, Maxime Lisbonne, Maxime Vuillaume, Mina Puccinelli, Napoléon Gaillard, Napoléon La Cécilia, Nathalie Lemel, Noémi Reclus, Olivier Souêtre, Paschal Grousset, Paul Antoine Brunel, Paul Ferrat, Paul Martine, Paul Milliet, Paul Philémon Rastoul, Paule Mink, Philéas Félix Bermond, Pierre Bourgeois, Pierre Denis, Pierre Laffitte, Pierre Vésinier, Pilotell, Q98433941, Raoul Rigault, Raoul Urbain, Reine Cottin, Robert Caze, Sofia Kovalevskaya, Sophie Poirier, Stanislas Pourille, Théophile Ferré, Tony Moilin, Ulysse Parent, Valentin Bouteilhe, Victoire Léodile Béra, Victoire Tinayre, Victor Clément, Victor Pilhes, Victor Renou, Victorine Brocher, Victorine Eudes, Victorine Gorget, Walery Antoni Wróblewski, Édouard Moreau, Édouard Vaillant, Élisabeth Rétiffe, Élisée Reclus, Émile Eudes, Émile Léopold Clément, Émile Oudet, Émile Victor Duval, Émilie Noro
+Achille Ballière, Adolf Rozwadowski, Adolphe Assi, Adolphe Clémence, Adrien Lejeune, Adèle Esquiros, Adélaïde Valentin, Albert Regnard, Albert Theisz, Alexandre Girault, Alexis Louis Trinquet, Alfred-Édouard Billioray, Alix Payen, Alphonse Humbert, Alphonse Lonclas, Amilcare Cipriani, Amélie Payen, André Bastelica, André Léo, André Slomszynski, Angelina Courcelles, Anna Pustowójtówna, Anne-Marie Ménand, Antoine Demay, Antonin Desfarges, Aristide Claris, Armand Antoine Jules Arnaud, Armand Félix Marie Jobbé-Duval, Arthur, Arthur Ranc, Auguste Adolphe Okolowicz, Auguste Blanqui, Auguste Durassier, Auguste Serraillier, Auguste Sicard, Auguste Viard, Auguste-Jean-Marie Vermorel, Augustin Avrial, Augustin Verdure, Baptiste Descamps, Benjamin Barré, Benoît Malon, Blanche Lefebvre, Blanche de Corbie, Béatrix Excoffon, Camille Bias, Camille Langevin, Charles Amouroux, Charles Beslay, Charles Delescluze, Charles Ferdinand Gambon, Charles Gérardin, Charles Ledroit, Charles Longuet, Charles Lullier, Charles Élie Ducoudray, Claude Dominique Napias, Claude Payet, Claude-Jules Duruof, Clovis Dupont, Clériot, Constant Marie, Constantin Kawecki, Coralie Chérelle, Céleste Hardouin, Dominique Régère, Edgar Monteil, Edmond-Alfred Goupy, Elisabeth Javelin, Eliska Vincent, Emmanuel Chauvière, Ernest Granger, Ernest Puget, Eugenio Defendi, Eugène Gérardin, Eugène Pottier, Eugène Protot, Eugène Razoua, Eugène Varlin, Eugène Vermersch, Eugénie Boulanger, Eugénie Chilly, Eulalie Papavoine, Florence Baruteau, Florence Van de Walle, Fornarina de Fonseca, Fortuné Henry, François Edmond Rattier, François Jourde, François-Charles Ostyn, François-Louis Parisel, Frédéric Cournet, Félix Pyat, Gabriel Ranvier, Galdric Verdaguer, Gaston Da Costa, Gaston Save, Georges Arnold, Georges Cavalier, Giovanni Defendi, Gustave Courbet, Gustave Flourens, Gustave Lefrançais, Gustave Maroteau, Gustave Paul Cluseret, Gustave Tridon, Henri Brissac, Henri Chouteau, Henri Mortier, Henri Payen, Henri Ranvier, Henri Rochefort, Henri Rochefort, Henry Bauër, Henry Louis Champy, Herminie Cadolle, Hortense David, Hortense Machu, Hubert Geresme, Jacques Louis Durand, Jarosław Dombrowski, Jean Allemane, Jean Baptiste Clément, Jean Charles Rouchy, Jean-Baptiste Chardon, Jean-Baptiste Noro, Jean-Jacques Pillot, Jean-Louis Pindy, Jean-Martial-Aminthe Dupont, Joseph Charlemont, Joséphine Marchais, Joséphine Michel Bocquin, Jules Allix, Jules Andrieu, Jules Bergeret, Jules Fontaine, Jules Honoré Vinot, Jules Joffrin, Jules Martelet, Jules Miot, Jules Montels, Jules Vallès, Jules-Ferdinand Baulard, Jules-Nicolas-André Babick, Jules-Paul Johannard, Julie Magot, Julien Fruneau, Kswaiera Ladojska Kawecka, Laure Boulant, Lise Bourette, Louis Rossel, Louis-Augustin Rogeard, Louis-Charles Maljournal, Louis-Denis Chalain, Louis-Guillaume Debock, Louis-Simon Dereure, Louise Bonenfant, Louise Bonnehaut, Louise Boutin, Louise Laffitte, Louise Michel, Louise Neckbecker, Louise Talbot, Lucie Bocquin, Lucie Maris, Lucien Henry, Lucienne Prins, Léo Frankel, Léo Melliet, Léontine Suétens, Marc-Amédée Gromier, Marguerite Lachaise, Marie Catherine Rogissart, Marie Christine Dargent, Marie Ferré, Marie La Cécilia, Marie Lecourt, Marie Manière, Marie Mercier, Marie-Jeanne Moussu, María Pantazí, Maurice Garreau, Maurice Garreau, Maxime Lisbonne, Maxime Vuillaume, Mina Puccinelli, Napoléon Gaillard, Napoléon La Cécilia, Nathalie Lemel, Noémi Reclus, Olivier Souêtre, Paschal Grousset, Paul Antoine Brunel, Paul Ferrat, Paul Martine, Paul Milliet, Paul Philémon Rastoul, Paule Minck, Philéas Félix Bermond, Pierre Bourgeois, Pierre Denis, Pierre Laffitte, Pierre Vésinier, Pilotell, Père Tanguy, Raoul Rigault, Raoul Urbain, Reine Cottin, Robert Caze, Sofia Kovalevskaïa, Sophie Poirier, Stanislas Xavier Pourille, Théophile Ferré, Tony Moilin, Ulysse Parent, Valentin Bouteilhe, Victoire Tinayre, Victor Clément, Victor Pilhes, Victor Renou, Victorine Brocher, Victorine Eudes, Victorine Gorget, Walery Wroblewski, colonel Delorme, sœurs Clémence, Édouard Moreau, Édouard Vaillant, Élisabeth Dmitrieff, Élisabeth Rétiffe, Élisée Reclus, Émile Eudes, Émile Léopold Clément, Émile Oudet, Émile-Victor Duval, Émilie Noro
 ## Répartition par genre
 Dans wikidata, on peut remplir le 'sexe ou genre' (P21) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné.
                     Voyons comment se répartissent selon leur genre les communard·e·s ayant une fiche dans wikidata.
-Sur 237, il y a 69 femmes, 166 hommes, et 2 personne dont le genre n'est pas renseigné ou autre
+Sur 236, il y a 69 femmes, 165 hommes, et 2 personne dont le genre n'est pas renseigné ou autre
 ![camembert par genre](camembert_genre.png)
 ## Répartition par année de naissance
 Dans wikidata, on peut remplir la 'date de naissance' (P569) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné.
                     Voyons comment se répartissent selon leur naissance, donc âge les communard·e·s ayant une fiche dans wikidata.
 ![barres par années de naissance](barre_annee_naissance.png)
 ## D'où viennent les communard·e·s
-Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné.
-                    Comptons par ville combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s. 
+Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné. 
+
+                    le plus souvent il s'agit d'une ville, mais al peut y avoir un arrondissement, pays... 
+
+                    Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s. 
  Trie par nombre descoissant de personne et ordre inverse de l'alphabet
 |Ville de naissance|Nombre de personne| 
  |---|---| 
-|Paris|37| 
+|Paris|36| 
 |Bordeaux|5| 
 |Tours|4| 
 |Vierzon|3| 
@@ -42,12 +50,10 @@ Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. 
 |Chartres|2| 
 |Brest|2| 
 |Bastia|2| 
-|5th arrondissement of Paris|2| 
-|Žaludok|1| 
+|5e arrondissement de Paris|2| 
 |http://www.wikidata.org/.well-known/genid/8e5877e6412ebc87fc17ddc1e9570200|1| 
 |http://www.wikidata.org/.well-known/genid/292d283267c3b9e29b349d9cca6d4ffa|1| 
-|former 9th arrondissement of Paris|1| 
-|Zhytomyr|1| 
+|ancien 9e arrondissement de Paris|1| 
 |Vézelise|1| 
 |Vroncourt-la-Côte|1| 
 |Vire|1| 
@@ -57,7 +63,6 @@ Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. 
 |Valenciennes|1| 
 |Troyes|1| 
 |Troissy|1| 
-|Toropetsky District|1| 
 |Thézan-lès-Béziers|1| 
 |Tarascon-sur-Ariège|1| 
 |Suresnes|1| 
@@ -84,13 +89,14 @@ Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. 
 |Romilly-sur-Seine|1| 
 |Revel|1| 
 |Remilly-Wirquin|1| 
+|Raïon de Toropets|1| 
 |Pézenas|1| 
 |Péronne|1| 
 |Puget-Théniers|1| 
 |Puceul|1| 
 |Précieux|1| 
+|Pologne|1| 
 |Poligny|1| 
-|Poland|1| 
 |Plédran|1| 
 |Plourin-lès-Morlaix|1| 
 |Ornans|1| 
@@ -100,7 +106,7 @@ Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. 
 |Nangis|1| 
 |Mézières-en-Drouais|1| 
 |Mâcon|1| 
-|Moscow|1| 
+|Moscou|1| 
 |Mortagne-au-Perche|1| 
 |Montmerle-sur-Saône|1| 
 |Mirecourt|1| 
@@ -120,11 +126,13 @@ Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. 
 |Lachapelle-aux-Pots|1| 
 |La Guillotière|1| 
 |La Charité-sur-Loire|1| 
+|Jytomyr|1| 
 |Justine-Herbigny|1| 
+|Jaloudok|1| 
 |Issoire|1| 
 |Gignac|1| 
-|Ghent|1| 
 |Gap|1| 
+|Gand|1| 
 |Fontenay-le-Comte|1| 
 |Figeac|1| 
 |Figanières|1| 
