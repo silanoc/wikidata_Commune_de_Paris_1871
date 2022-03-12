@@ -18,6 +18,11 @@ Architecture :
 - deux classes objets.
 - Rapport : c'est lui qui créé le fichier md et les premières lignes génériques.
 - Analyse : créé une instance de rapport, fait les analyses et les écrits dans rapport
+
+Convertion
+- https://stackoverflow.com/questions/4135344/is-there-any-direct-way-to-generate-pdf-from-markdown-file-by-python?fbclid=IwAR3fH9J_1-lDj5P1X4j52uhuIS5_9w0CIgxmfmQuwbVlWZp6KPYfb6jyJys
+-- https://pypi.org/project/Markdown/
+-- https://github.com/xhtml2pdf/xhtml2pdf
 """
 
 #--------------------- Les imports----------------------------------------------------------------------------------------
@@ -46,19 +51,41 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 
 endpoint_url = "https://query.wikidata.org/sparql"
 
-query = """SELECT ?communard ?communardLabel ?pr_nom ?pr_nomLabel ?sexe_ou_genre ?sexe_ou_genreLabel ?date_de_naissance ?lieu_de_naissance ?lieu_de_naissanceLabel WHERE {
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "fr". }
+query = """SELECT ?communard ?communardLabel ?sexe_ou_genreLabel ?date_de_naissance ?lieu_de_naissanceLabel ?conjointLabel (GROUP_CONCAT(DISTINCT ?occupationLabel; SEPARATOR = ", ") AS ?LeursoccupationsLabel) (GROUP_CONCAT(DISTINCT ?prenomLabel; SEPARATOR = ", ") AS ?prenoms) ?date_de_mort ?circonstances_de_la_mortLabel ?cause_de_la_mortLabel WHERE {
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "fr".
+    ?communard rdfs:label ?communardLabel.
+    ?sexe_ou_genre rdfs:label ?sexe_ou_genreLabel.
+    ?occupation rdfs:label ?occupationLabel.
+    ?lieu_de_naissance rdfs:label ?lieu_de_naissanceLabel.
+    ?conjoint rdfs:label ?conjointLabel.
+    ?prenom rdfs:label ?prenomLabel.
+    ?circonstances_de_la_mort rdfs:label ?circonstances_de_la_mortLabel.
+    ?cause_de_la_mort rdfs:label ?cause_de_la_mortLabel.
+  }
   ?communard wdt:P106 wd:Q1780490.
   OPTIONAL { ?communard wdt:P21 ?sexe_ou_genre. }
   OPTIONAL { ?communard wdt:P569 ?date_de_naissance. }
   OPTIONAL { ?communard wdt:P19 ?lieu_de_naissance. }
-}"""
+  OPTIONAL { ?communard wdt:P106 ?occupation. }
+  OPTIONAL { ?communard wdt:P26 ?conjoint. }
+  OPTIONAL { ?communard wdt:P735 ?prenom. }
+  OPTIONAL { ?communard wdt:P570 ?date_de_mort. }
+  OPTIONAL { ?communard wdt:P1196 ?circonstances_de_la_mort. }
+  OPTIONAL { ?communard wdt:P509 ?cause_de_la_mort. }
+  
+}
+GROUP BY ?communard ?communardLabel ?sexe_ou_genreLabel ?date_de_naissance ?lieu_de_naissanceLabel ?conjointLabel ?date_de_mort ?circonstances_de_la_mortLabel ?cause_de_la_mortLabel"""
 
 #------------------- Les classes objets ------------------------------------------------------------------------------------
 class Rapport():
     """Création d'un fichier .md qui receuillera tous les resultats.
     Le place dans un dossier rapport, sous-dossier d'où est lancé le programme.
-    Méthode : creation/ouverture"""
+    Méthode : 
+    - creation : créer, ouvre et fait le début du fichier md
+    - creation_html : transforme le fichier md dans un autre fichier en html
+    - creation_pdf : fransforme le fichier html en pdf"""
+    
     def __init__(self):
         """création du fichier en utilisant la méthode creation
         Ajoute un titre, des métdonnées textuelles et une intro au format md"""
@@ -77,11 +104,7 @@ Wikidata est une base de données libre, liée à Wikipédia. Son remplissage es
 Ce document est fait à partir des éléments s'y trouvants le {self.date.day}/{self.date.month}/{self.date.year} à {self.date.hour}h{self.date.minute}. \n
 Sont pris en compte toutes les personne dont le champs 'occupation' (P21) comprends la valeur 'communard' (Q1780490)'."""
         #--- écriture sur le fichier
-        self.fichier.write(titre + "\n")
-        self.fichier.write(intro + "\n")
-        self.fichier.write(meta_autaire + "\n")
-        self.fichier.write(meta_date + "\n")
-        self.fichier.write(methodologie + "\n")
+        self.ecriture(titre, intro, meta_autaire, meta_date, methodologie)
 
     def creation(self):
         """méthode appelé par __init__
@@ -98,11 +121,12 @@ Sont pris en compte toutes les personne dont le champs 'occupation' (P21) compre
             self.titre_rapport = "Tout_savoir_des_communard_e_s_de_wikidata.md"
             self.chemin_titre = "rapport/" + self.titre_rapport
             self.fichier = open(self.chemin_titre, "w")
-            print("fichier 'Tout_savoir_des_communard_e_s_de_wikidata.m' créé")            
+            print("fichier 'Tout_savoir_des_communard_e_s_de_wikidata.md' créé")            
         except:
             print("fichier non créé")
             
     def creation_html(self):
+        """ écrit ligne à ligne le fichier md dans un autre fichier html"""
         #--- fermeture (de lécriture) du fichier md
         self.fichier.close()
         #--- creation du fichier html
@@ -116,7 +140,6 @@ Sont pris en compte toutes les personne dont le champs 'occupation' (P21) compre
         fichier_md = open("rapport/Tout_savoir_des_communard_e_s_de_wikidata.md", "r")
         fichier_html = open("rapport/Tout_savoir_des_communard_e_s_de_wikidata.html", "w")
         for line in fichier_md:
-            #txt = f.readlines()
             html = markdown.markdown(line)
             #print(html)
             fichier_html.write(html)
@@ -124,6 +147,7 @@ Sont pris en compte toutes les personne dont le champs 'occupation' (P21) compre
         fichier_md.close()
         
     def creation_pdf(self):
+        """Creation du fichier pdf à partir du html"""
         fichier_pdf = "rapport/Tout_savoir_des_communard_e_s_de_wikidata.pdf"
         source_html = ""
         fichier_html = open("rapport/Tout_savoir_des_communard_e_s_de_wikidata.html", "r")
@@ -135,9 +159,16 @@ Sont pris en compte toutes les personne dont le champs 'occupation' (P21) compre
         pisa_status = pisa.CreatePDF(
                 source_html,                # the HTML to convert
                 dest=result_file)           # file handle to recieve result
-
         # close output file
-        result_file.close()                 # close output file
+        result_file.close()
+        
+    def ecriture(self, *args):
+        """ Ecrire dans le fichier md
+        - dans Rapport (lui meme), mettre les arguments de l'intro du fichier
+        - méthode à utiliser dans les celles de Analyse
+        pour écrire dans le fichier md les arguments du type titre, contexte, nombre, graphique, comentaire..."""
+        for arg in range(len(args)):
+            self.fichier.write(args[arg] + "\n")
 
 class Analyse():
     """C'est l'élement clef du programme.
@@ -201,9 +232,7 @@ class Analyse():
         #--- mettre dans le rapport
         titre = "## Liste des personnes étudiées" 
         contexte = f"Simple liste des {len(set_personne)} personnes avec leur appellation d'usage dans wikidata. Par ordre alphabétique de l'item, le prénom le plus souvent."
-        self.rapport.fichier.write(titre + "\n")
-        self.rapport.fichier.write(contexte + "\n" + "\n")
-        self.rapport.fichier.write(txt_qui + "\n")
+        self.rapport.ecriture(titre, contexte, txt_qui)
 
     def genre(self):
         """Compte le nombre de personne par genre et en fait un camembert"""
@@ -236,10 +265,7 @@ class Analyse():
                     Voyons comment se répartissent selon leur genre les communard·e·s ayant une fiche dans wikidata.""")
         nombre = (f"Sur {self.nb_de_personne}, il y a {compte_feminin} femmes, {compte_masculin} hommes, et {compte_autre} personne dont le genre n'est pas renseigné ou autre")
         #--- ecriture
-        self.rapport.fichier.write(titre + "\n")
-        self.rapport.fichier.write(contexte + "\n")
-        self.rapport.fichier.write(nombre+ "\n")
-        self.rapport.fichier.write(f"![camembert par genre]({nom_graphique})"+ "\n")
+        self.rapport.ecriture(titre,contexte,nombre, f"![camembert par genre]({nom_graphique})" )
 
     def ville_naissance(self):
         """ Compte le nombre de personne par lieu de naissance.
@@ -266,9 +292,7 @@ le plus souvent il s'agit d'une ville, mais al peut y avoir un arrondissement, p
 Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s. \n Trie par nombre descoissant de personne et ordre inverse de l'alphabet""")
         nombre = md_tableau_compte
         #--- écriture
-        self.rapport.fichier.write(titre + "\n")
-        self.rapport.fichier.write(contexte + "\n")
-        self.rapport.fichier.write(nombre+ "\n")    
+        self.rapport.ecriture(titre, contexte, nombre)    
 
     def annee_naissance(self):
         """Compte dans un dictionnaire le nombre de personne par années de naissance et en faire un graphique en barre"""
@@ -307,9 +331,7 @@ Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y 
         contexte = ("""Dans wikidata, on peut remplir la 'date de naissance' (P569) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné.
                     Voyons comment se répartissent selon leur naissance, donc âge les communard·e·s ayant une fiche dans wikidata.""")
         #--- écriture
-        self.rapport.fichier.write(titre + "\n")
-        self.rapport.fichier.write(contexte + "\n")
-        self.rapport.fichier.write(f"![barres par années de naissance]({nom_graphique})"+ "\n")                
+        self.rapport.ecriture(titre, contexte, f"![barres par années de naissance]({nom_graphique})")             
 
     def occupation(self):
         """ La requête est telle, que dans la colonne occupation une personne peut en avoir plusieurs.
@@ -356,16 +378,12 @@ C'est aussi un élément remarquable de la personne. Ainsi le champ occupation p
 Voyons comment se répartissent selon leur occupation les communard·e·s ayant une fiche dans wikidata. \n
 Pour faciliter la lecture, les occupations exercées par une seule personne sont dans une liste, celles par plusieurs personnes dans un graphique.""")
         #--- écriture
-        self.rapport.fichier.write(titre + "\n")
-        self.rapport.fichier.write(contexte + "\n")
-        self.rapport.fichier.write(txt_occupation_unique+ "\n")
-        self.rapport.fichier.write(f"![barres par occupation]({nom_graphique})"+ "\n") 
+        self.rapport.ecriture(titre, contexte, txt_occupation_unique, f"![barres par occupation]({nom_graphique})") 
         
     def converti_en_pdf(self):
         self.rapport.creation_html()
         self.rapport.creation_pdf()
-        
-                
+           
     def pipeline(self):
         try:
             self.requete_wikidata()
@@ -388,7 +406,7 @@ Pour faciliter la lecture, les occupations exercées par une seule personne sont
             print("genre : ok")
         except:
             print("genre : error")
-        """try:
+        try:
             self.annee_naissance()
             print("année naissance : ok")
         except:
@@ -404,12 +422,12 @@ Pour faciliter la lecture, les occupations exercées par une seule personne sont
         except:
             print("occupation : error")        
         try:
-            
-            print("pdf non implémenté")            
+            self.converti_en_pdf()
+            print("conversion ok")            
         except:
-            print("pdf : error")
-        """
-        self.converti_en_pdf()
+            print("conversion : error")
+        
+        
 
 if __name__ == "__main__":
     print("début traitement")
