@@ -137,29 +137,26 @@ Sont pris en compte toutes les personne dont le champs 'occupation' (P21) compre
         except:
             print("fichier non créé")
         #--- replissage html
-        fichier_md = open("rapport/Tout_savoir_des_communard_e_s_de_wikidata.md", "r")
-        fichier_html = open("rapport/Tout_savoir_des_communard_e_s_de_wikidata.html", "w")
-        for line in fichier_md:
-            html = markdown.markdown(line)
-            #print(html)
+            fichier_md = open("rapport/Tout_savoir_des_communard_e_s_de_wikidata.md", "r")
+            fichier_html = open("rapport/Tout_savoir_des_communard_e_s_de_wikidata.html", "w")
+            tout_md = "".join(fichier_md.readlines())
+            html = markdown.markdown(tout_md)
             fichier_html.write(html)
-        fichier_html.close()
-        fichier_md.close()
+            fichier_html.close()
+            fichier_md.close()
         
     def creation_pdf(self):
         """Creation du fichier pdf à partir du html"""
-        fichier_pdf = "rapport/Tout_savoir_des_communard_e_s_de_wikidata.pdf"
-        source_html = ""
         fichier_html = open("rapport/Tout_savoir_des_communard_e_s_de_wikidata.html", "r")
-        for line in fichier_html:
-            source_html += line        
-        # open output file for writing (truncated binary)
+        source_html = "".join(fichier_html.readlines())
+        fichier_html.close()
+        fichier_pdf = "rapport/Tout_savoir_des_communard_e_s_de_wikidata.pdf"
         result_file = open(fichier_pdf, "w+b")
         # convert HTML to PDF
         pisa_status = pisa.CreatePDF(
-                source_html,                # the HTML to convert
-                dest=result_file)           # file handle to recieve result
-        # close output file
+            source_html,                # the HTML to convert
+            dest=result_file)           # file handle to recieve result
+            # close output file
         result_file.close()
         
     def ecriture(self, *args):
@@ -279,20 +276,22 @@ class Analyse():
         #print(df_compte_ville)
         #--- Création du tableau
         #- les 2 premières lignes
-        md_tableau_compte = """|Ville de naissance|Nombre de personne| \n |---|---| \n"""
+        titre = """|Ville de naissance|Nombre de personne|\n|---|---|\n"""
+        md_tableau_compte = """|Ville de naissance|Nombre de personne|\n|---|---|\n"""
         #- boucles sur le df pour créer toutes les lignes
         for i in range(len(df_compte_ville)):
-            md_tableau_compte += f"|{df_compte_ville.iloc[i,0]}|{df_compte_ville.iloc[i,1]}| \n"
+            md_tableau_compte += f"|{df_compte_ville.iloc[i,0]}|{df_compte_ville.iloc[i,1]}|\n"
         #- Contrôle
         #print(md_tableau_compte)
         #---------Dans le rapport
         titre = ("## D'où viennent les communard·e·s")
         contexte = ("""Dans wikidata, on peut remplir le 'lieu_de_naissance' (P19) pour les personnes. Certaines personnes peuvent ne pas avoir ce champs renseigné. \n
 le plus souvent il s'agit d'une ville, mais al peut y avoir un arrondissement, pays... \n
-Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s. \n Trie par nombre descoissant de personne et ordre inverse de l'alphabet""")
+Comptons par lieux combien de communard·e·s (ayant une fiche dans wikidata) y sont né·e·s. \n Trie par nombre descoissant de personne et ordre inverse de l'alphabet \n""")
+        espace =" \n "
         nombre = md_tableau_compte
         #--- écriture
-        self.rapport.ecriture(titre, contexte, nombre)    
+        self.rapport.ecriture(titre, contexte, titre,  md_tableau_compte, espace, espace)    
 
     def annee_naissance(self):
         """Compte dans un dictionnaire le nombre de personne par années de naissance et en faire un graphique en barre"""
@@ -377,6 +376,7 @@ Par contre besoin d'aller chercher dans la liste des occupation le cas échéant
 C'est aussi un élément remarquable de la personne. Ainsi le champ occupation peut inclure communard, c'est d'ailleurs par ce champ que l'on a fait l'extrait des personnes. \n
 Voyons comment se répartissent selon leur occupation les communard·e·s ayant une fiche dans wikidata. \n
 Pour faciliter la lecture, les occupations exercées par une seule personne sont dans une liste, celles par plusieurs personnes dans un graphique.""")
+        
         #--- écriture
         self.rapport.ecriture(titre, contexte, txt_occupation_unique, f"![barres par occupation]({nom_graphique})") 
         
