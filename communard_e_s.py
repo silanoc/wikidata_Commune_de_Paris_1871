@@ -380,6 +380,60 @@ Pour faciliter la lecture, les occupations exercées par une seule personne sont
         #--- écriture
         self.rapport.ecriture(titre, contexte, txt_occupation_unique, f"![barres par occupation]({nom_graphique})") 
         
+    def carte_cause_et_annee_mort(self):
+        """Comme il y a peu de donnée, et beaucoup de jour  différent, on va remplacer date la date de déces précise par année-mois
+        Les données causes et circonstances de la mort étant peur renseigner, on va travailler sur les deux champs.
+        Il s'agit de faire les stats sur les causes/circonstances par année/mois, et en trouver le nombre de personne concernées  
+        todo : c'est le numéro de colonne qui est rentrée, il risque de changer !!!      
+        """
+        #--- Changer les dates deces, colonne 16 
+        for communard in range(self.df_tout_le_monde.shape[0]):
+            date = self.df_tout_le_monde.iloc[communard,16] 
+            date = str(date)[0:7]
+            self.df_tout_le_monde.iloc[communard, 16] = date
+            
+        #--- crosstab sur cause
+        cross_cause = pd.crosstab(self.df_tout_le_monde["cause_de_la_mortLabel.value"], self.df_tout_le_monde["date_de_mort.value"])
+        cross_cause_md = cross_cause.to_markdown()
+                
+        #--- crosstab sur circonstance
+        cross_circonstance = pd.crosstab(self.df_tout_le_monde["circonstances_de_la_mortLabel.value"], self.df_tout_le_monde["date_de_mort.value"])
+        cross_circonstance_md = cross_circonstance.to_markdown()
+        
+        #--- graph cause
+        sns.heatmap(cross_cause, cmap="BuPu") #cmap : gére la couleur
+        plt.xticks(rotation = 90)
+        plt.tight_layout()
+        nom_graphique1 = "carte_cause_date_deces.png"
+        chemin_graphique1 = "rapport/" + nom_graphique1
+        plt.savefig(chemin_graphique1)
+        #plt.show()
+        plt.close()
+        
+        #--- graph circonstance
+        sns.heatmap(cross_circonstance, cmap="BuPu")
+        plt.xticks(rotation = 90)
+        plt.tight_layout()
+        nom_graphique2 = "carte_circonstance_date_deces.png"
+        chemin_graphique2 = "rapport/" + nom_graphique2
+        plt.savefig(chemin_graphique2)
+        #plt.show()
+        plt.close()
+        
+        #--- texte
+        titre = "## Cause de décès dans le temps"
+        contexte = """Dans wikidata les propiété cause de la mort et circonstances de la mort peuvent être renseigné. \n 
+Le nombre de fiche correctement renseigné est faible, mais voyons par année-mois combien de personens sont maorte par cause/circonstance. \n
+Les deux conceptes sont sufisament différents pour ne pas fair un seul graph, mais deux"""
+        soustitre1 = "### Par Cause"
+        soustitre2 = "### Par circonstance"
+        
+        #--- écriture
+        self.rapport.ecriture(titre, contexte, 
+                              soustitre1, cross_cause_md, f"![graph par cause et année de mort]({nom_graphique1})",
+                              soustitre2, cross_circonstance_md, f"![graph par circonstance et année de mort]({nom_graphique2})",)
+        
+        
     def converti_en_pdf(self):
         self.rapport.creation_html()
         self.rapport.creation_pdf()
@@ -420,7 +474,12 @@ Pour faciliter la lecture, les occupations exercées par une seule personne sont
             self.occupation()
             print("occupation : ok")
         except:
-            print("occupation : error")        
+            print("occupation : error")   
+        try:
+            self.carte_cause_et_annee_mort()
+            print("cause_et_annee_mort : ok")
+        except:
+            print("cause_et_annee_mort : error")     
         try:
             self.converti_en_pdf()
             print("conversion ok")            
